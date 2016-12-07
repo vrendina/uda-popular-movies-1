@@ -24,11 +24,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     // ArrayList that holds all of the movie data in Movie objects
     private ArrayList<Movie> mMovieData;
 
+    // Reference to the onClickHandler class that handles selection of movies
+    private MovieOnClickHandler mMovieOnClickHandler;
+
     /**
      * Create the MovieAdapter
+     * @param movieOnClickHandler Class that implements the click handling interface
      */
-    public MovieAdapter() {
-
+    public MovieAdapter(MovieOnClickHandler movieOnClickHandler) {
+        mMovieOnClickHandler = movieOnClickHandler;
     }
 
     /**
@@ -122,10 +126,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         @Override
         public void onClick(View view) {
+            // Retrieve the Movie object that was selected
             int postion = getAdapterPosition();
+            Movie selectedMovie = mMovieData.get(postion);
 
             Log.d(TAG, "Clicked item at positon: " + String.valueOf(postion));
+            Log.d(TAG, selectedMovie.getTitle());
 
+            mMovieOnClickHandler.onClickMovie(selectedMovie);
         }
+    }
+
+    /**
+     * Interface that defines what a movie click handler object should implement
+     */
+    public interface MovieOnClickHandler {
+        void onClickMovie(Movie movie);
     }
 }

@@ -17,7 +17,7 @@ import software.level.udacity.popularmovies1.data.Movie;
 import software.level.udacity.popularmovies1.utilities.MovieRequestType;
 import software.level.udacity.popularmovies1.utilities.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
 
         // Create the adapter and set it
-        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
@@ -110,5 +110,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Handles selection of movie from the RecyclerView
+     * @param movie The movie that was selected passed by the ViewHolder
+     */
+    @Override
+    public void onClickMovie(Movie movie) {
+        Log.d(TAG, "You selected movie " + movie.getTitle());
     }
 }
