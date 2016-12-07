@@ -2,20 +2,74 @@ package software.level.udacity.popularmovies1;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import software.level.udacity.popularmovies1.utilities.MovieRequestType;
+import software.level.udacity.popularmovies1.utilities.NetworkUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    // Holds a reference to the RecyclerView that holds all the movie posters
+    private RecyclerView mRecyclerView;
+
+    // Holds a reference to the loading indicator
+    private ProgressBar mProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+
+        // Do the initial setup on the RecyclerView
+        configureRecyclerView();
+
+        // Testing the url builder
+        NetworkUtils.buildURL(this, MovieRequestType.DETAILS, 500);
+        NetworkUtils.buildURL(this, MovieRequestType.POPULAR);
+        NetworkUtils.buildURL(this, MovieRequestType.TOP_RATED);
+
+        // Create some fake data for testing the RecyclerView
+        ArrayList<String> fakeData = new ArrayList<>();
+        fakeData.add("The Shawshank Redemption");
+        fakeData.add("The Green Mile");
+        fakeData.add("Forest Gump");
+        fakeData.add("The Truman Show");
+
+        // Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+
     }
+
+
+    /**
+     * Performs the initial configuration for the RecyclerView
+     */
+    private void configureRecyclerView() {
+        // Get the reference to the RecyclerView from the layout file
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
+
+        // Initialize the layout manager and set the RecyclerView to use it
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        // All the movie posters will be the same size
+        mRecyclerView.setHasFixedSize(true);
+
+        // Create the adapter and set it
+        MovieAdapter adapter = new MovieAdapter();
+        mRecyclerView.setAdapter(adapter);
+    }
+
 
     /**
      * Inflates the menu resource for this activity
