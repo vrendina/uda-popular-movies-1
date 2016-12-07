@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import software.level.udacity.popularmovies1.data.Movie;
 import software.level.udacity.popularmovies1.utilities.MovieRequestType;
 import software.level.udacity.popularmovies1.utilities.NetworkUtils;
 
@@ -22,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Holds a reference to the RecyclerView that holds all the movie posters
     private RecyclerView mRecyclerView;
+
+    // Holds a reference to the RecyclerView adapter
+    private MovieAdapter mMovieAdapter;
 
     // Holds a reference to the loading indicator
     private ProgressBar mProgressBar;
@@ -40,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
         NetworkUtils.buildURL(this, MovieRequestType.TOP_RATED);
 
         // Create some fake data for testing the RecyclerView
-        ArrayList<String> fakeData = new ArrayList<>();
-        fakeData.add("The Shawshank Redemption");
-        fakeData.add("The Green Mile");
-        fakeData.add("Forest Gump");
-        fakeData.add("The Truman Show");
+        ArrayList<Movie> fakeData = new ArrayList<>();
+        fakeData.add(new Movie("The Shawshank Redemption"));
+        fakeData.add(new Movie("Forest Gump"));
+
+        mMovieAdapter.setMovieData(fakeData);
 
         // Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
 
@@ -66,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
 
         // Create the adapter and set it
-        MovieAdapter adapter = new MovieAdapter();
-        mRecyclerView.setAdapter(adapter);
+        mMovieAdapter = new MovieAdapter();
+        mRecyclerView.setAdapter(mMovieAdapter);
     }
 
 

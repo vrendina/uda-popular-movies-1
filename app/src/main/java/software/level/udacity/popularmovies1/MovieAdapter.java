@@ -1,11 +1,16 @@
 package software.level.udacity.popularmovies1;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import software.level.udacity.popularmovies1.data.Movie;
 
 /**
  * Adapter used by the RecyclerView to display the grid layout
@@ -13,6 +18,11 @@ import android.widget.TextView;
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
+
+    private static final String TAG = MovieAdapter.class.getSimpleName();
+
+    // ArrayList that holds all of the movie data in Movie objects
+    private ArrayList<Movie> mMovieData;
 
     /**
      * Create the MovieAdapter
@@ -64,13 +74,27 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public int getItemCount() {
-        return 25;
+        if(mMovieData == null) {
+            return 0;
+        }
+        return mMovieData.size();
     }
 
     /**
-     * Viewholder class to store references to recycled views.
+     * Set the movie data and refresh the ViewHolder to display the new data
+     * @param movieData An ArrayList of Movie objects
      */
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+    public void setMovieData(ArrayList<Movie> movieData) {
+        mMovieData = movieData;
+        notifyDataSetChanged();
+    }
+
+
+    /**
+     * Viewholder class to store references to recycled views. Class also passes along the onClick
+     * event.
+     */
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // Holds a reference to the ImageView that contains the movie poster
         public final ImageView mImageView;
@@ -87,6 +111,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             super(view);
             mImageView = (ImageView) view.findViewById(R.id.iv_movie_poster_grid);
             mTextView = (TextView) view.findViewById(R.id.tv_movie_poster_grid);
+
+            // Set the onClickListener to the ViewHolder
+            view.setOnClickListener(this);
+        }
+
+        /**
+         * Handles onClick events for items in the RecyclerView
+         * @param view The view that was clicked on
+         */
+        @Override
+        public void onClick(View view) {
+            int postion = getAdapterPosition();
+
+            Log.d(TAG, "Clicked item at positon: " + String.valueOf(postion));
+
         }
     }
 }
