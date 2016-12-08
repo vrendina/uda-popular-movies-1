@@ -118,7 +118,6 @@ public final class NetworkUtils {
      * @return URL for downloading image
      */
     public static URL buildImageURL(String path, String size) {
-
         // Strip any preceeding slash out of the path
         path = path.replace("/", "");
 
