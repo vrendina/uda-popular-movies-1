@@ -180,11 +180,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             // Generate the request URL
             URL requestURL = null;
-            if(movieRequestTypes[0] == MovieRequestType.POPULAR) {
+            MovieRequestType requestType = movieRequestTypes[0];
+
+            if(requestType == MovieRequestType.POPULAR) {
                 requestURL = NetworkUtils.buildURL(mContext, MovieRequestType.POPULAR);
             }
 
-            if(movieRequestTypes[0] == MovieRequestType.TOP_RATED) {
+            if(requestType == MovieRequestType.TOP_RATED) {
                 requestURL = NetworkUtils.buildURL(mContext, MovieRequestType.TOP_RATED);
             }
 
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 Log.d(TAG, "Response: " + response);
 
                 // Parse the JSON data into an ArrayList of Movie objects
-                ArrayList<Movie> movies = MovieParser.parseMovieData(response);
+                ArrayList<Movie> movies = MovieParser.parseMovieData(response, requestType);
                 Log.d(TAG, "Parsed response: " + movies.toString());
 
                 return movies;
