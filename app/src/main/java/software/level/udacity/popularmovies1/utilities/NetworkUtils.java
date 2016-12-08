@@ -22,20 +22,24 @@ public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
-    /* Base scheme for the Uri builder */
+    // Base scheme for the Uri builder
     private static final String API_SCHEME = "https";
 
-    /* Base Uri for the Movie Database API */
+    // Base Uri for the Movie Database API
     private static final String API_AUTHORITY = "api.themoviedb.org";
 
-    /* Version string appended to the path of the Movie Database API */
+    // Version string appended to the path of the Movie Database API
     private static final String API_VERSION = "3";
 
-    /* Path appended to all movie requests */
+    // Path appended to all movie requests
     private static final String API_PATH = "movie";
 
-    /* Language code used for requests */
+    // Language code used for requests
     private static final String API_LANGUAGE = "en-US";
+
+    // Base Uri for the images
+    private static final String IMAGE_AUTHORITY = "image.tmdb.org";
+
 
     /**
      * Create the base Uri for any API request
@@ -100,6 +104,40 @@ public final class NetworkUtils {
             url = new URL(uri.toString());
         } catch (MalformedURLException e) {
             Log.e(TAG, "Problem with constructing URL -- " + uri.toString());
+        }
+
+        Log.d(TAG, url.toString());
+
+        return url;
+    }
+
+    /**
+     * Generates a URL for downloading an image from The Movie DB image service
+     * @param path API supplied poster_path or backdrop_path
+     * @param size Size of image required (w92, w154, w185, w342, w500, w780, original)
+     * @return URL for downloading image
+     */
+    public static URL buildImageURL(String path, String size) {
+
+        // Strip any preceeding slash out of the path
+        path = path.replace("/", "");
+
+        Uri.Builder builder = new Uri.Builder();
+
+        builder.scheme(API_SCHEME)
+                .authority(IMAGE_AUTHORITY)
+                .appendPath("t")
+                .appendPath("p")
+                .appendPath(size)
+                .appendPath(path);
+
+        Uri uri = builder.build();
+
+        URL url = null;
+        try {
+            url = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "Problem with constructing URL -- " + url.toString());
         }
 
         Log.d(TAG, url.toString());
