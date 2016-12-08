@@ -49,20 +49,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // Do the initial setup on the RecyclerView
         configureRecyclerView();
 
-        // Testing the url builder
-        NetworkUtils.buildURL(this, MovieRequestType.DETAILS, 500);
-        NetworkUtils.buildURL(this, MovieRequestType.POPULAR);
-        NetworkUtils.buildURL(this, MovieRequestType.TOP_RATED);
-
-        // Create some fake data for testing the RecyclerView
-        ArrayList<Movie> fakeData = new ArrayList<>();
-        fakeData.add(new Movie("The Shawshank Redemption"));
-        fakeData.add(new Movie("Forest Gump"));
-
-        mMovieAdapter.setMovieData(fakeData);
-
         // Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
 
+        // Fetch the movie data
         fetchMovieData();
     }
 
@@ -140,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
     @Override
     public void onClickMovie(Movie movie) {
-        Log.d(TAG, "You selected movie " + movie.getTitle());
-
         Intent detailIntent = new Intent(this, DetailActivity.class);
         detailIntent.putExtra(Intent.EXTRA_TEXT, "id");
 
