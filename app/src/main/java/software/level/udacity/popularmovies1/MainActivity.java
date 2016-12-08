@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -197,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 return movies;
 
-            } catch (IOException e) {
+            } catch (IOException|JSONException e) {
                 Log.e(TAG, e.toString());
             }
 
