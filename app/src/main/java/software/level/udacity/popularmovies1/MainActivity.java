@@ -1,5 +1,6 @@
 package software.level.udacity.popularmovies1;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -113,11 +114,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     /**
-     * Handles selection of movie from the RecyclerView
+     * Handles selection of movie from the RecyclerView. Creates an intent to load the detail
+     * activity and passes along the id of the movie that was selected.
      * @param movie The movie that was selected passed by the ViewHolder
      */
     @Override
     public void onClickMovie(Movie movie) {
         Log.d(TAG, "You selected movie " + movie.getTitle());
+
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra(Intent.EXTRA_TEXT, "id");
+
+        startActivity(detailIntent);
     }
 }
