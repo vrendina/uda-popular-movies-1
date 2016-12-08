@@ -2,7 +2,13 @@ package software.level.udacity.popularmovies1.data;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import software.level.udacity.popularmovies1.utilities.MovieRequestType;
 
 
 /**
@@ -20,13 +26,37 @@ public class MovieParser {
      * @param jsonData Data returned from the API call
      * @return ArrayList containing parsed Movie objects
      */
-    public static ArrayList<Movie> parseMovieData(String jsonData) {
+    public static ArrayList<Movie> parseMovieData(String jsonData, MovieRequestType requestType) throws JSONException {
         ArrayList<Movie> movieData = new ArrayList<>();
 
-        Log.d(TAG, "Parsing JSON data ---------------------");
-        Log.d(TAG, jsonData);
-        Log.d(TAG, "---------------------------------------");
+        JSONObject jsonObject = new JSONObject(jsonData);
+
+        if(requestType == MovieRequestType.POPULAR || requestType == MovieRequestType.TOP_RATED) {
+
+            // If the data contains a "results" item then we will parse the array of movie data
+            if(jsonObject.has("results")) {
+                JSONArray results = jsonObject.getJSONArray("results");
+
+                // Create a Movie object for each result and add it to the ArrayList
+                for(int i = 0; i < results.length(); i++) {
+                    JSONObject result = results.getJSONObject(i);
+
+                    Movie movie = new Movie();
+                    movie.title = result.getString("title");
+                    movie.poster_path = result.getString("poster_path");
+                    movie.backdrop_path = result.getString("backdrop_path");
+                    movie.moviedb_id = result.getInt("id");
+                    movie.popularity = result.getDouble("popularity");
+                    movie.vote_average = result.getDouble("vote_average");
+                    movie.vote_count = result.getInt("vote_count");
+                    movie.overview = result.getString("overview");
+
+                    movieData.add(movie);
+                }
+            }
+        }
 
         return movieData;
     }
+
 }
