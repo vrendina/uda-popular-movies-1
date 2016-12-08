@@ -67,7 +67,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        holder.mTextView.setText(String.valueOf(position));
+        Movie movie = mMovieData.get(position);
+        holder.mTextView.setText(movie.title);
     }
 
     /**
@@ -92,7 +93,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         mMovieData = movieData;
         notifyDataSetChanged();
     }
-
 
     /**
      * Viewholder class to store references to recycled views. Class also passes along the onClick
@@ -130,9 +130,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             int postion = getAdapterPosition();
             Movie selectedMovie = mMovieData.get(postion);
 
-            Log.d(TAG, "Clicked item at positon: " + String.valueOf(postion));
-            Log.d(TAG, selectedMovie.getTitle());
-
+            // Call the click handler with the selected movie object
             mMovieOnClickHandler.onClickMovie(selectedMovie);
         }
     }
