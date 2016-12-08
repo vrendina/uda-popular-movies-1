@@ -109,13 +109,25 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         // Popular sort method selected
         if(id == R.id.action_popular) {
-            Log.i(TAG, "Selected popular.");
+            // If the popular sort order wasn't already selected then update the data
+            if(mCurrentMovieRequestType != MovieRequestType.POPULAR) {
+                Log.i(TAG, "Popular was not already selected, updating data");
+                mCurrentMovieRequestType = MovieRequestType.POPULAR;
+                fetchMovieData();
+            }
+
             return true;
         }
 
         // Top rated sort method selected
         if(id == R.id.action_toprated) {
-            Log.i(TAG, "Selected top rated.");
+            // If the top rated sort order wasn't already selected then update the data
+            if(mCurrentMovieRequestType != MovieRequestType.TOP_RATED) {
+                Log.i(TAG, "Top rated was not already selected, updating data");
+                mCurrentMovieRequestType = MovieRequestType.TOP_RATED;
+                fetchMovieData();
+            }
+
             return true;
         }
 
@@ -184,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 // Parse the JSON data into an ArrayList of Movie objects
                 ArrayList<Movie> movies = MovieParser.parseMovieData(response, requestType);
-                Log.d(TAG, "Parsed response: " + movies.toString());
 
                 return movies;
 
@@ -195,9 +206,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             return null;
         }
 
+        /**
+         * Now that the data has been returned, update the RecyclerView on the main thread
+         * with the new movie data
+         * @param movies ArrayList of new movie data returned from the background task
+         */
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
             super.onPostExecute(movies);
+
+            mMovieAdapter.setMovieData(movies);
         }
     }
 }
