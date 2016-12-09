@@ -3,4 +3,7 @@
 
     <string name="action_popular">Popular</string>
     <string name="action_toprated">Top Rated</string>
+
+    <!--Possible values for api_image_size (w92, w154, w185, w342, w500, w780, original) -->
+    <string name="api_image_size">w185</string>
 </resources>

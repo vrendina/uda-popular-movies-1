@@ -8,9 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.net.URL;
 import java.util.ArrayList;
 
 import software.level.udacity.popularmovies1.data.Movie;
+import software.level.udacity.popularmovies1.utilities.NetworkUtils;
 
 /**
  * Adapter used by the RecyclerView to display the grid layout
@@ -68,7 +72,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         Movie movie = mMovieData.get(position);
-        holder.mTextView.setText(movie.title);
+        ImageView imageView = holder.mImageView;
+
+        // String resource holds the api image size
+        String imageSize = imageView.getResources().getString(R.string.api_image_size);
+
+        // Load the poster image when we bind the view
+        URL imageURL = NetworkUtils.buildImageURL(movie.poster_path, imageSize);
+
+        Picasso.with(holder.mImageView.getContext())
+                .load(imageURL.toString())
+                .into(holder.mImageView);
     }
 
     /**
@@ -103,9 +117,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // Holds a reference to the ImageView that contains the movie poster
         public final ImageView mImageView;
 
-        // Temporary TextView that is used for testing
-        public final TextView mTextView;
-
         /**
          * Constructor for the view holder that creates references to the views within
          * the parent view that will be recycled
@@ -114,7 +125,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public MovieAdapterViewHolder(View view) {
             super(view);
             mImageView = (ImageView) view.findViewById(R.id.iv_movie_poster_grid);
-            mTextView = (TextView) view.findViewById(R.id.tv_movie_poster_grid);
 
             // Set the onClickListener to the ViewHolder
             view.setOnClickListener(this);
