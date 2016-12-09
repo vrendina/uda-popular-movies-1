@@ -29,17 +29,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    // Holds a reference to the RecyclerView that holds all the movie posters
+    // Reference to the RecyclerView that holds all the movie posters
     private RecyclerView mRecyclerView;
 
-    // Holds a reference to the RecyclerView adapter
+    // Reference to the RecyclerView adapter
     private MovieAdapter mMovieAdapter;
 
-    // Holds a reference to the loading indicator
+    // Reference to the loading indicator
     private ProgressBar mProgressBar;
 
-    // Hold the current movie request type, by default we will get popular movies
-    private MovieRequestType mCurrentMovieRequestType = MovieRequestType.POPULAR;
+    // Reference to the menu for keeping track of what is selected
+    private Menu mMenu;
+
+    // Set the default request type
+    private final MovieRequestType mDefaultMovieRequestType = MovieRequestType.POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +52,30 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // Do the initial setup on the RecyclerView
         configureRecyclerView();
 
-        // Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
-
         // Fetch the movie data
         fetchMovieData();
+    }
+
+    /**
+     * Keeps track of the current request type
+     * @return The currently selected MovieRequestType
+     */
+    private MovieRequestType getSelectedMovieRequestType() {
+
+        // If the menu hasn't been created yet, reutrn the default request type
+        if(mMenu == null) {
+            return mDefaultMovieRequestType;
+        }
+
+        if(mMenu.findItem(R.id.action_popular).isChecked()) {
+            return MovieRequestType.POPULAR;
+        }
+
+        if(mMenu.findItem(R.id.action_toprated).isChecked()) {
+            return MovieRequestType.TOP_RATED;
+        }
+
+        return mDefaultMovieRequestType;
     }
 
 
@@ -63,8 +86,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // Get the reference to the RecyclerView from the layout file
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
 
+        // Depending on the screen orientation we can show a different number of columns
+        int columns = getResources().getInteger(R.integer.movie_columns);
+
         // Initialize the layout manager and set the RecyclerView to use it
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, columns);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
         // All the movie posters will be the same size
@@ -80,10 +106,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
     private void fetchMovieData() {
         FetchMovieDataTask task = new FetchMovieDataTask(this);
-
-        task.execute(mCurrentMovieRequestType);
+        task.execute(getSelectedMovieRequestType());
     }
-
 
     /**
      * Inflates the menu resource for this activity
@@ -94,11 +118,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.movies, menu);
+
+        // Set the default sort method to checked
+        if(mDefaultMovieRequestType == MovieRequestType.POPULAR) {
+            menu.findItem(R.id.action_popular).setChecked(true);
+        }
+
+        if(mDefaultMovieRequestType == MovieRequestType.TOP_RATED) {
+            menu.findItem(R.id.action_toprated).setChecked(true);
+        }
+
+        // Store a reference to the menu so we can figure out which items are checked later
+        mMenu = menu;
+
         return true;
     }
 
     /**
-     * Handles selection of items in the menu
+     * Handles selection of items in the menu. The "checkable" menu item group actually
+     * handles checking if the item is already selected automatically. This prevents firing
+     * off a duplicate request to the API when we have already loaded that data.
      *
      * @param item The menu item that was selected
      * @return Return false to allow normal menu processing, true to consume it here
@@ -110,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // Popular sort method selected
         if(id == R.id.action_popular) {
             // If the popular sort order wasn't already selected then update the data
-            if(mCurrentMovieRequestType != MovieRequestType.POPULAR) {
+            if(getSelectedMovieRequestType() != MovieRequestType.POPULAR) {
                 Log.i(TAG, "Popular was not already selected, updating data");
-                mCurrentMovieRequestType = MovieRequestType.POPULAR;
+                item.setChecked(true);
                 fetchMovieData();
             }
 
@@ -122,9 +161,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // Top rated sort method selected
         if(id == R.id.action_toprated) {
             // If the top rated sort order wasn't already selected then update the data
-            if(mCurrentMovieRequestType != MovieRequestType.TOP_RATED) {
+            if(getSelectedMovieRequestType() != MovieRequestType.TOP_RATED) {
                 Log.i(TAG, "Top rated was not already selected, updating data");
-                mCurrentMovieRequestType = MovieRequestType.TOP_RATED;
+                item.setChecked(true);
                 fetchMovieData();
             }
 
