@@ -10,9 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -51,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         // Do the initial setup on the RecyclerView
         configureRecyclerView();
+
+        // ProgressBar is shown when data is loading
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_movies_loading);
 
         // Fetch the movie data
         fetchMovieData();
@@ -206,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         /**
@@ -255,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             super.onPostExecute(movies);
 
             mMovieAdapter.setMovieData(movies);
+            mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
 }
