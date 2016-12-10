@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public void onClickMovie(Movie movie) {
         Intent detailIntent = new Intent(this, DetailActivity.class);
-        detailIntent.putExtra(Intent.EXTRA_TEXT, "id");
+        detailIntent.putExtra(Intent.EXTRA_TEXT, movie.moviedb_id);
 
         startActivity(detailIntent);
     }
@@ -205,6 +205,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mContext = context;
         }
 
+        /**
+         * Set the visibility of the progress bar prior to executing the background task
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
