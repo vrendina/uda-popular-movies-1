@@ -76,6 +76,7 @@ public class MovieParser {
         // If we have a detail request then they are additional fields we can grab
         if(requestType == MovieRequestType.DETAILS) {
             movie.runtime = result.getInt("runtime");
+            movie.release_date = result.getString("release_date");
         }
 
         return movie;
